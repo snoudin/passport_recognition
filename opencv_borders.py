@@ -1,11 +1,33 @@
 import numpy as np
 import cv2
 
-image_vec = cv2.imread('image.jpeg', 1)
-g_blurred = cv2.GaussianBlur(image_vec, (5, 5), 0)
-blurred_float = g_blurred.astype(np.float32) / 255.0
-edgeDetector = cv2.ximgproc.createStructuredEdgeDetection("model.yml")
-edges = edgeDetector.detectEdges(blurred_float) * 255.0
+
+def get_bw(name):
+    image_vec = cv2.imread(name, 1)
+    if image_vec is None:
+        raise ValueError
+    g_blurred = cv2.GaussianBlur(image_vec, (5, 5), 0)
+    blurred_float = g_blurred.astype(np.float32) / 255.0
+    edgeDetector = cv2.ximgproc.createStructuredEdgeDetection("model.yml")
+    edges = edgeDetector.detectEdges(blurred_float) * 255.0
+    edges_ = np.asarray(edges, np.uint8)
+    SaltPepperNoise(edges_)
+    contour = findSignificantContour(edges_)
+    # Draw the contour on the original image
+    contourImg = np.copy(image_vec)
+    cv2.drawContours(contourImg, [contour], 0, (0, 255, 0), 10, cv2.LINE_AA, maxLevel=1)
+    mask = np.zeros_like(edges_)
+    cv2.fillPoly(mask, [contour], 255)  # calculate sure foreground area by dilating the mask
+    mapFg = cv2.erode(mask, np.ones((5, 5), np.uint8), iterations=10)  # mark inital mask as "probably background"
+    # and mapFg as sure foreground
+    trimap = np.copy(mask)
+    trimap[mask == 0] = cv2.GC_BGD
+    trimap[mask == 255] = cv2.GC_PR_BGD
+    trimap[mapFg == 255] = cv2.GC_FGD  # visualize trimap
+    trimap_print = np.copy(trimap)
+    trimap_print[trimap_print == cv2.GC_PR_BGD] = 128
+    trimap_print[trimap_print == cv2.GC_FGD] = 255
+    cv2.imwrite('trimap.png', trimap_print)
 
 
 def SaltPepperNoise(edgeImg):
@@ -20,10 +42,6 @@ def SaltPepperNoise(edgeImg):
             break
         lastMedian = median
         median = cv2.medianBlur(edgeImg, 3)
-
-
-edges_ = np.asarray(edges, np.uint8)
-SaltPepperNoise(edges_)
 
 
 def findSignificantContour(edgeImg):
@@ -45,23 +63,3 @@ def findSignificantContour(edgeImg):
         contoursWithArea.sort(key=lambda meta: meta[1], reverse=True)
     largestContour = contoursWithArea[0][0]
     return largestContour
-
-
-contour = findSignificantContour(edges_)
-# Draw the contour on the original image
-contourImg = np.copy(image_vec)
-cv2.drawContours(contourImg, [contour], 0, (0, 255, 0), 10, cv2.LINE_AA, maxLevel=1)
-
-
-mask = np.zeros_like(edges_)
-cv2.fillPoly(mask, [contour], 255)  # calculate sure foreground area by dilating the mask
-mapFg = cv2.erode(mask, np.ones((5, 5), np.uint8), iterations=10)  # mark inital mask as "probably background"
-# and mapFg as sure foreground
-trimap = np.copy(mask)
-trimap[mask == 0] = cv2.GC_BGD
-trimap[mask == 255] = cv2.GC_PR_BGD
-trimap[mapFg == 255] = cv2.GC_FGD  # visualize trimap
-trimap_print = np.copy(trimap)
-trimap_print[trimap_print == cv2.GC_PR_BGD] = 128
-trimap_print[trimap_print == cv2.GC_FGD] = 255
-cv2.imwrite('trimap.png', trimap_print)
