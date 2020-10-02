@@ -21,9 +21,13 @@ passport = Image.open('main.png')
 x, y = passport.size
 snum = passport.crop((11 * x // 13, 0, x, y // 2)).transpose(Image.ROTATE_90)
 snum.save('series_and_number.png')
-
-
+surname = passport.crop((4 * x // 10, y // 20 * 11, 16 * x // 20, y // 20 * 13))
+surname.save('surname.png')
+recieved_in = passport.crop((2 * x // 10, y // 18 * 2, 18 * x // 20, y // 9 * 2))
+recieved_in.save('recieved_in.png')
 # TODO: same manipulations
 
 
-print(recognize.get_text('series_and_number.png'))
+print(recognize.get_snum('series_and_number.png'))
+print(recognize.get_surname('surname.png'))
+print(recognize.get_recieved_in('recieved_in.png'))
