@@ -1,7 +1,9 @@
 from PIL import Image
+import pytesseract
 import opencv_borders, recognize
 
 
+pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
 opencv_borders.get_bw('scan.jpg')
 img = Image.open('trimap.png')
 left, u, r, d = 0, 0, 0, 0
@@ -24,8 +26,8 @@ snum = passport.crop((11 * x // 13, 0, x, y // 2)).transpose(Image.ROTATE_90)
 snum.save('series_and_number.png')
 surname = passport.crop((int(41 * x / 100), int(y * 32 / 60), int(17 * x / 20), int(y * 37 / 60)))
 surname.save('surname.png')
-recieved_in = passport.crop((int(2 * x / 10), int(y / 9), int(18 * x / 20), int(y * 2 / 9)))
-recieved_in.save('recieved_in.png')
+received_in = passport.crop((int(2 * x / 10), int(y / 9), int(18 * x / 20), int(y * 2 / 9)))
+received_in.save('received_in.png')
 name = passport.crop((int(4 * x / 10), int(y * 37 / 60), int(17 * x / 20), int(y * 39 / 60)))
 name.save('name.png')
 patronym = passport.crop((int(21 * x / 50), int(y * 16 / 25), int(17 * x / 20), int(y * 55 / 80)))
@@ -36,11 +38,14 @@ birth = passport.crop((int(17 * x / 30), int(y * 41 / 60), int(3 * x / 4), int(y
 birth.save('birth.png')
 born_in = passport.crop((int(17 * x / 40), int(y * 43 / 60), int(17 * x / 20), int(y * 50 / 60)))
 born_in.save('born_in.png')
-
-# TODO: codes and receive date
+receive_date = passport.crop((int(2 * x / 10), int(y * 15 / 72), int(16 * x / 40), int(y * 9 / 36)))
+receive_date.save('receive_date.png')
+code = passport.crop((int(11 * x / 20), int(y * 15 / 72), int(9 * x / 10), int(y * 9 / 36)))
+code.save('code.png')
+# TODO: take sizes from .cfg file
 print(recognize.get_snum('series_and_number.png'))
 print('_______________________________')
-print(recognize.get_recieved_in('recieved_in.png'))
+print(recognize.get_recieved_in('received_in.png'))
 print('_______________________________')
 print(recognize.get_name('surname.png'))
 print('_______________________________')
@@ -53,3 +58,7 @@ print('_______________________________')
 print(recognize.get_date('birth.png'))
 print('_______________________________')
 print(recognize.get_born_in('born_in.png'))
+print('_______________________________')
+print(recognize.get_date('receive_date.png'))
+print('_______________________________')
+print(recognize.get_code('code.png'))
