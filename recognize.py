@@ -3,15 +3,14 @@ from PIL import Image
 
 
 def get_snum(gray):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     val = 100
     line = ''
     while 1:
         if val > 200:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
-        cv2.imwrite("bw.png", im_bw)
-        numbers = Image.open('bw.png')
-        line = pytesseract.image_to_string(numbers).lstrip('\n\t ').rstrip('\n\t ')[:12]
+        line = pytesseract.image_to_string(im_bw).lstrip('\n\t ').rstrip('\n\t ')[:12]
         if len(line) != 12 or sum([1 for i in line if i.isdigit()]) != 10:
             val += 3
         else:
@@ -20,15 +19,14 @@ def get_snum(gray):
 
 
 def get_recieved_in(gray):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     val = 90
     line = ''
     while 1:
         if val > 200:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
-        cv2.imwrite("bw.png", im_bw)
-        place = Image.open('bw.png')
-        line = pytesseract.image_to_string(place, lang='rus')
+        line = pytesseract.image_to_string(im_bw, lang='rus')
         if 'ОТДЕЛ' not in line:
             val += 3
         else:
@@ -46,15 +44,14 @@ def get_recieved_in(gray):
 
 
 def get_name(gray):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     val = 100
     line = ''
     while len(line) < 2:
         if val > 200:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
-        cv2.imwrite("bw.png", im_bw)
-        surname = Image.open('bw.png')
-        line = pytesseract.image_to_string(surname, lang='rus')
+        line = pytesseract.image_to_string(im_bw, lang='rus')
         while line != '' and (line[0] in '-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/' or ord(line[0]) > 1200):
             line = line[1:]
         while line != '' and (line[-1] in '-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/' or ord(line[-1]) > 1200):
@@ -66,15 +63,14 @@ def get_name(gray):
 
 
 def get_gender(gray):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     val = 100
     line = ''
     while line not in ['МУЖ.', 'ЖЕН.']:
         if val > 200:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
-        cv2.imwrite("bw.png", im_bw)
-        gender = Image.open('bw.png')
-        line = pytesseract.image_to_string(gender, lang='rus').lstrip('-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip('-,:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
+        line = pytesseract.image_to_string(im_bw, lang='rus').lstrip('-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip('-,:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
         if len(line) > 40 or len(line) < 12 or sum([1 for i in line if i.isdigit()]) != 10:
             val += 3
         else:
@@ -83,15 +79,14 @@ def get_gender(gray):
 
 
 def get_date(gray):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     val = 100
     line = ''
     while 1:
         if val > 200:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
-        cv2.imwrite("bw.png", im_bw)
-        numbers = Image.open('bw.png')
-        line = pytesseract.image_to_string(numbers).lstrip('-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip('-,:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
+        line = pytesseract.image_to_string(im_bw).lstrip('-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip('-,:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
         if len(line) > 40 or len(line) < 10 or sum([1 for i in line if i.isdigit()]) != 8:
             val += 3
         else:
@@ -100,15 +95,14 @@ def get_date(gray):
 
 
 def get_born_in(gray):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     val = 100
     line = ''
     while len(line) < 2:
         if val > 200:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
-        cv2.imwrite("bw.png", im_bw)
-        place = Image.open('bw.png')
-        line = pytesseract.image_to_string(place, lang='rus')
+        line = pytesseract.image_to_string(im_bw, lang='rus')
         line = line.replace('\n', ' ')
         line = line.replace('--', '-')
         line = line.replace(' -', '')
@@ -129,15 +123,14 @@ def get_born_in(gray):
 
 
 def get_code(gray):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     val = 100
     line = ''
     while 1:
         if val > 200:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
-        cv2.imwrite("bw.png", im_bw)
-        numbers = Image.open('bw.png')
-        line = pytesseract.image_to_string(numbers)
+        line = pytesseract.image_to_string(im_bw)
         while line != '' and (line[0] in '-.,:;@#!?[]{}_+= \n\t\x0c^*()|\\/' or ord(line[0]) > 1200
                               or line[0].islower()):
             line = line[1:]
