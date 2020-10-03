@@ -4,8 +4,8 @@ import numpy as np
 
 def get_snum(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = clear(more_contrast(img))
-    cv2.imwrite('snum.png', img)
+    img = upscale(clear(more_contrast(img)))
+    # cv2.imwrite('snum.png', img)
     line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').lstrip('\n\t\f ').rstrip('\n\t\f ')[:12]
     line.replace(' ', '')
     if not line:
@@ -16,7 +16,6 @@ def get_snum(img):
 def get_recieved_in(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = clear(more_contrast(img))
-    cv2.imwrite('recieved_in.png', img)
     line = pytesseract.image_to_string(img, lang='rus')
     line = line.replace('\n', ' ')
     line = line.replace('--', '-')
@@ -24,34 +23,61 @@ def get_recieved_in(img):
     line = line.replace('_', '')
     line = line.replace('..', '')
     line = line.replace(' .', '')
-    line = line.replace('  ', ' ')
+    while '  ' in line:
+        line = line.replace('  ', ' ')
+    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or line[0].islower() or not line[0].isalpha()):
+        line = line[1:]
+    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200 or line[-1].islower() or not line[-1].isalpha()):
+        line = line[:-1]
     if not line:
         return None
-    return line.lstrip(',.:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/').rstrip(',.:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/').upper()
+    while 'Г.' in line and not line.startswith('Г.'):
+        line = line[1:]
+    while 'ГОР.' in line and not line.startswith('ГОР.'):
+        line = line[1:]
+    if 'ГОР.' not in line:
+        line = line.replace('ГОР', 'ГОР.')
+    if not line.startswith('ГОР') and 'Г.' not in line and line.startswith('Г'):
+        line = line.replace('Г', 'Г.', 1)
+    return line
 
 
 def get_name(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = clear(more_contrast(img))
-    cv2.imwrite('name.png', img)
     line = pytesseract.image_to_string(img, lang='rus')
-    while line != '' and (line[0] in '-,.:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200):
+    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or not line[0].isalpha()):
         line = line[1:]
-    while line != '' and (line[-1] in '-,.:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200):
+    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200 or not line[-1].isalpha()):
         line = line[:-1]
     if not line:
         return None
-    return line.upper()
+    words = line.split('\n')
+    for i in words:
+        pos = words.index(i)
+        while i != '' and (i[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(i[0]) > 1200 or not line[0].isalpha()):
+            i = i[1:]
+        while i != '' and (i[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(i[-1]) > 1200 or not line[-1].isalpha()):
+            i = i[:-1]
+        words[pos] = i.lstrip('—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/').rstrip('—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/')
+        if not i or not i.isupper():
+            words.pop(words.index(i))
+    if len(words) > 1:
+        return words[0]
+    return ''.join(words)
 
 
 def get_gender(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = clear(img)
-    cv2.imwrite('gender.png', img)
     line = pytesseract.image_to_string(img, lang='rus').upper()
+    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or not line[0].isalpha()):
+        line = line[1:]
+    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200 or not line[-1].isalpha()):
+        line = line[:-1]
     if not line:
         return None
-    if 'M' in line or 'У' in line.lstrip(',.:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/').rstrip(',.:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/').upper():
+    if 'M' in line or 'У' in line.upper():
         return 'МУЖ.'
     else:
         return 'ЖЕН.'
@@ -59,18 +85,29 @@ def get_gender(img):
 
 def get_date(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = clear(more_contrast(img))
-    cv2.imwrite('date.png', img)
-    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789.')
-    if not line.lstrip(' \n\t\f\x0c.').rstrip(' \n\t\f\x0c.'):
+    img = upscale(clear(more_contrast(img)))
+    # cv2.imwrite('date.png', img)
+    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789.').lstrip(' \n\t\f\x0c.').rstrip(' \n\t\f\x0c.')
+    line = line.replace('.', '')
+    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200):
+        line = line[1:]
+    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 200):
+        line = line[:-1]
+    if not line:
         return None
-    return line.lstrip(' \n\t\f\x0c.').rstrip(' \n\t\f\x0c.')
+    try:
+        d, m, y = int(line[:2]), int(line[2:4]), int(line[4:])
+        if d > 31 or m > 12 or y > 2100:
+            return None
+    except Exception:
+        return None
+    return line[:2] + '.' + line[2:4] + '.' + line[4:]
 
 
 def get_born_in(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = clear(more_contrast(img))
-    cv2.imwrite('born_in.png', img)
+    # cv2.imwrite('born_in.png', img)
     line = pytesseract.image_to_string(img, lang='rus')
     line = line.replace('\n', ' ')
     line = line.replace('--', '-')
@@ -79,25 +116,38 @@ def get_born_in(img):
     line = line.replace('..', '')
     line = line.replace(' .', '')
     line = line.replace('  ', ' ')
-    while line != '' and (line[0] in '-.,:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200
-                          or line[0].islower()):
+    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200
+                          or line[0].islower() or not line[0].isalpha()):
         line = line[1:]
-    while line != '' and (line[-1] in '-.,:;@#!?[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200
-                          or line[-1].islower()):
+    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200
+                          or line[-1].islower() or not line[-1].isalpha()):
         line = line[:-1]
     if not line:
         return None
-    return line.upper()
+    while 'Г.' in line and not line.startswith('Г.'):
+        line = line[1:]
+    while 'ГОР.' in line and not line.startswith('ГОР.'):
+        line = line[1:]
+    if 'ГОР.' not in line:
+        line = line.replace('ГОР', 'ГОР.')
+    if not line.startswith('ГОР') and 'Г.' not in line and line.startswith('Г'):
+        line = line.replace('Г', 'Г.', 1)
+    return line
 
 
 def get_code(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = clear(more_contrast(img))
-    cv2.imwrite('code.png', img)
-    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789-')
-    if not line.lstrip(' \n\t\f\x0c-').rstrip(' \n\t\f\x0c-'):
+    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789-').lstrip(' \n\t\f\x0c-').rstrip(' \n\t\f\x0c-')
+    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200
+                          or line[0].islower()):
+        line = line[1:]
+    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 200
+                          or line[-1].islower()):
+        line = line[:-1]
+    if not line:
         return None
-    return line.lstrip(' \n\t\f\x0c-').rstrip(' \n\t\f\x0c-')
+    return line
 
 
 def more_contrast(img):
@@ -107,21 +157,6 @@ def more_contrast(img):
     cl = clahe.apply(l)
     limg = cv2.merge((cl, a, b))
     return cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-
-
-# Not used
-def remove_lines(img):
-    thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-    horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 1))
-    detected_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
-    cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-    for c in cnts:
-        cv2.drawContours(img, [c], -1, (255, 255, 255), 2)
-    repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 6))
-    result = 255 - cv2.morphologyEx(255 - img, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
-    cv2.imwrite('result.png', result)
-    cv2.waitKey()
 
 
 # Not used
@@ -166,3 +201,12 @@ def clear(img, denoise=True):
         if sizes[i] >= min_size:
             img2[output == i + 1] = 255
     return cv2.bitwise_not(img2)
+
+
+def upscale(img):
+    y, x = img.shape
+    return cv2.GaussianBlur(cv2.resize(img, (x * 2, y * 2), interpolation=cv2.INTER_AREA), (5, 5), 0)
+
+
+def get_magick(img):
+    pass
