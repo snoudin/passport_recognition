@@ -20,7 +20,6 @@ def scan(path, background):
     except Exception:
         raise IOError('Wrong file path')
     y, x, _ = img.shape
-    dst = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
     begin = time.time()
     if background:
         begin = time.time()
@@ -34,52 +33,41 @@ def scan(path, background):
             r += 1
         while all([pixels[j, y - d - 1] == 0for j in range(x)]):
             d += 1
-    passport = Image.fromarray(dst).crop((left, u, x - r, y - d)).convert('L')
+    passport = Image.fromarray(img).crop((left, u, x - r, y - d))
     x, y = passport.size
     templates = json.load(open('templates.json'))
     best = ({}, 0)
     for template in templates:
         pos = template['snum']
-        snum = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                              int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y /
-                                                                  pos[3][1]))).transpose(Image.ROTATE_90)
+        snum = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y))).transpose(Image.ROTATE_90)
         pos = template['surname']
-        surname = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                                 int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        surname = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['received_in']
-        received_in = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                                     int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        received_in = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['name']
-        name = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                              int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        name = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['patronym']
-        patronym = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                                  int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        patronym = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['gender']
-        gender = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                                int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        gender = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['birth']
-        birth = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                               int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        birth = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['born_in']
-        born_in = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                                 int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        born_in = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['receive_date']
-        receive_date = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                                      int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        receive_date = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['code']
-        code = passport.crop((int(pos[0][0] * x / pos[0][1]), int(pos[1][0] * y / pos[1][1]),
-                              int(pos[2][0] * x / pos[2][1]), int(pos[3][0] * y / pos[3][1])))
+        code = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
 
         result = {'snum': recognize.get_snum(np.asarray(snum)),
                   'recieved_in': recognize.get_recieved_in(np.asarray(received_in)),
                   'surname': recognize.get_name(np.asarray(surname)),
                   'name': recognize.get_name(np.asarray(name)),
                   'patronym': recognize.get_name(np.asarray(patronym)),
-                  'birth': recognize.get_date(np.asarray(birth)),
                   'born_in': recognize.get_born_in(np.asarray(born_in)),
                   'receive_date': recognize.get_date(np.asarray(receive_date)),
                   'code': recognize.get_code(np.asarray(code)),
+                  'birth': recognize.get_date(np.asarray(birth)),
                   'gender': recognize.get_gender(np.asarray(gender))}
         cnt = sum([1 for i in result.keys() if result[i]])
         if cnt > best[1]:
