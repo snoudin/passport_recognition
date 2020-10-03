@@ -1,5 +1,5 @@
 import pytesseract, cv2
-from PIL import Image
+import numpy as np
 
 
 def get_snum(gray):
@@ -40,7 +40,7 @@ def get_recieved_in(gray):
     line = line.replace('..', '')
     line = line.replace(' .', '')
     line = line.replace('  ', ' ')
-    return line.lstrip(',.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip(',.:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
+    return line.lstrip(',.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip(',.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').upper()
 
 
 def get_name(gray):
@@ -75,7 +75,8 @@ def get_gender(gray):
             val += 3
         else:
             break
-    return line
+    cv2.imwrite('bw.png', cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1])
+    return line.upper()
 
 
 def get_date(gray):
@@ -119,7 +120,7 @@ def get_born_in(gray):
         val += 3
         if line == '':
             val += 7
-    return line
+    return line.upper()
 
 
 def get_code(gray):
@@ -149,3 +150,49 @@ def get_code(gray):
         else:
             break
     return line
+
+
+def more_contrast(img):
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    cl = clahe.apply(l)
+    limg = cv2.merge((cl, a, b))
+    return cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+
+
+def remove_lines(img):
+    thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+    horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 1))
+    detected_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+    cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+    for c in cnts:
+        cv2.drawContours(img, [c], -1, (255, 255, 255), 2)
+    repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 6))
+    result = 255 - cv2.morphologyEx(255 - img, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
+    cv2.imwrite('result.png', result)
+    cv2.waitKey()
+
+
+def remove_noise(im):
+    # smooth the image with alternative closing and opening
+    # with an enlarging kernel
+    morph = im.copy()
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
+    morph = cv2.morphologyEx(morph, cv2.MORPH_CLOSE, kernel)
+    morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+    # take morphological gradient
+    gradient_image = cv2.morphologyEx(morph, cv2.MORPH_GRADIENT, kernel)
+    # split the gradient image into channels
+    image_channels = np.split(np.asarray(gradient_image), 3, axis=2)
+    channel_height, channel_width, _ = image_channels[0].shape
+    # apply Otsu threshold to each channel
+    for i in range(0, 3):
+        _, image_channels[i] = cv2.threshold(~image_channels[i], 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY)
+        image_channels[i] = np.reshape(image_channels[i], newshape=(channel_height, channel_width, 1))
+    # merge the channels
+    image_channels = np.concatenate((image_channels[0], image_channels[1], image_channels[2]), axis=2)
+    # save the denoised image
+    cv2.imwrite('output.jpg', image_channels)
