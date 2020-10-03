@@ -4,10 +4,10 @@ from PIL import Image
 
 def get_snum(gray):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    val = 100
+    val = 120
     line = ''
     while 1:
-        if val > 200:
+        if val > 180:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         line = pytesseract.image_to_string(im_bw).lstrip('\n\t ').rstrip('\n\t ')[:12]
@@ -23,7 +23,7 @@ def get_recieved_in(gray):
     val = 90
     line = ''
     while 1:
-        if val > 200:
+        if val > 180:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         line = pytesseract.image_to_string(im_bw, lang='rus')
@@ -48,7 +48,7 @@ def get_name(gray):
     val = 100
     line = ''
     while len(line) < 2:
-        if val > 200:
+        if val > 180:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         line = pytesseract.image_to_string(im_bw, lang='rus')
@@ -67,7 +67,7 @@ def get_gender(gray):
     val = 100
     line = ''
     while line not in ['МУЖ.', 'ЖЕН.']:
-        if val > 200:
+        if val > 180:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         line = pytesseract.image_to_string(im_bw, lang='rus').lstrip('-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip('-,:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
@@ -83,7 +83,7 @@ def get_date(gray):
     val = 100
     line = ''
     while 1:
-        if val > 200:
+        if val > 180:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         line = pytesseract.image_to_string(im_bw).lstrip('-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip('-,:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
@@ -99,7 +99,7 @@ def get_born_in(gray):
     val = 100
     line = ''
     while len(line) < 2:
-        if val > 200:
+        if val > 180:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         line = pytesseract.image_to_string(im_bw, lang='rus')
@@ -127,7 +127,7 @@ def get_code(gray):
     val = 100
     line = ''
     while 1:
-        if val > 200:
+        if val > 180:
             return None
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         line = pytesseract.image_to_string(im_bw)
