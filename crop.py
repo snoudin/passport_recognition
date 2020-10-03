@@ -22,15 +22,15 @@ x, y = passport.size
 # TODO: take sizes from .cfg file
 snum = passport.crop((11 * x // 13, 0, x, y // 2)).transpose(Image.ROTATE_90)
 snum.save('series_and_number.png')
-surname = passport.crop((4 * x // 10, y // 60 * 32, 17 * x // 20, y // 60 * 37))
+surname = passport.crop((int(4 * x / 10), int(y * 32 / 60), int(17 * x / 20), int(y * 37 / 60)))
 surname.save('surname.png')
-recieved_in = passport.crop((2 * x // 10, y // 18 * 2, 18 * x // 20, y // 9 * 2))
+recieved_in = passport.crop((int(2 * x / 10), int(y / 9), int(18 * x / 20), int(y * 2 / 9)))
 recieved_in.save('recieved_in.png')
-name = passport.crop((4 * x // 10, y // 60 * 37, 17 * x // 20, y // 20 * 13))
+name = passport.crop((int(4 * x / 10), int(y * 37 / 60), int(17 * x / 20), int(y * 2 / 3)))
 name.save('name.png')
-patronym = passport.crop((4 * x // 10, y // 20 * 13, 17 * x // 20, y // 60 * 42))
+patronym = passport.crop((int(21 * x / 50), int(y * 159 / 250), int(17 * x / 20), int(y * 55 / 80)))
 patronym.save('patronym.png')
-gender = passport.crop((11 * x // 30, y // 60 * 42, 10 * x // 20, y // 60 * 44))
+gender = passport.crop((int(11 * x / 30), int(y * 41 / 60), int(10 * x / 20), int(y * 44 / 60)))
 gender.save('gender.png')
 
 # TODO: same manipulations

@@ -60,15 +60,21 @@ def get_name(name):
     img = cv2.imread(name, 1)
     img = more_contrast(img)
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    im_bw = cv2.threshold(gray, 90, 255, cv2.THRESH_BINARY)[1]
-    cv2.imwrite("bw.png", im_bw)
-    surname = Image.open('bw.png')
-    line = pytesseract.image_to_string(surname, lang='rus')
-    while line[0] in '-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/' or ord(line[0]) > 1200 or line[0].islower():
-        line = line[1:]
-    while line[-1] in '-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/' or ord(line[-1]) > 1200 or line[-1].islower():
-        line = line[:-1]
+    val = 90
+    line = ''
+    while len(line) < 2:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
+        cv2.imwrite("bw.png", im_bw)
+        surname = Image.open('bw.png')
+        line = pytesseract.image_to_string(surname, lang='rus')
+        while line != '' and (line[0] in '-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/' or ord(line[0]) > 1200 or line[0].islower()):
+            line = line[1:]
+        while line != '' and (line[-1] in '-,.:;@#!?[]{}_+= \n\t\x0c^*()|\\/' or ord(line[-1]) > 1200 or line[-1].islower()):
+            line = line[:-1]
+        val += 3
+        if line == '':
+            val += 7
     return line
 
 
@@ -88,6 +94,7 @@ def get_gender(name):
         else:
             break
     return line
+
 
 def get_date(name):
     img = cv2.imread(name)
