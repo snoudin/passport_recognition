@@ -4,6 +4,10 @@ import opencv_borders, recognize
 
 
 def scan(path, background):
+    '''
+    path can be absolute and local
+    background is bool, mean there is picture contains background behind passport
+    '''
     try:
         from PIL import Image
         import cv2, json
@@ -11,7 +15,10 @@ def scan(path, background):
     except ImportError:
         os.system('pip install -r requirements.txt')
     left, u, r, d = 0, 0, 0, 0
-    img = cv2.imread(path)
+    try:
+        img = cv2.imread(path)
+    except Exception:
+        raise IOError('Wrong file path')
     y, x, _ = img.shape
     dst = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
     begin = time.time()
