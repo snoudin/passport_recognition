@@ -2,14 +2,12 @@ import pytesseract, cv2
 from PIL import Image
 
 
-def get_snum(name):
-    img = cv2.imread(name)
+def get_snum(gray):
     val = 100
     line = ''
     while 1:
         if val > 200:
             return None
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         cv2.imwrite("bw.png", im_bw)
         numbers = Image.open('bw.png')
@@ -21,14 +19,12 @@ def get_snum(name):
     return tuple([line[:2] + line[3:5], line[6:]])
 
 
-def get_recieved_in(name):
-    img = cv2.imread(name)
+def get_recieved_in(gray):
     val = 90
     line = ''
     while 1:
         if val > 200:
             return None
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         cv2.imwrite("bw.png", im_bw)
         place = Image.open('bw.png')
@@ -49,23 +45,12 @@ def get_recieved_in(name):
     return line.lstrip(',.:;@#!?[]{}_+= \n\t\x0c^*()|\\/').rstrip(',.:;@#!?[]{}_+= \n\t\x0c^*()|\\/')
 
 
-def more_contrast(img):
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    l, a, b = cv2.split(lab)
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    cl = clahe.apply(l)
-    limg = cv2.merge((cl, a, b))
-    return cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-
-
-def get_name(name):
-    img = cv2.imread(name, 1)
+def get_name(gray):
     val = 100
     line = ''
     while len(line) < 2:
         if val > 200:
             return None
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         cv2.imwrite("bw.png", im_bw)
         surname = Image.open('bw.png')
@@ -80,14 +65,12 @@ def get_name(name):
     return line.upper()
 
 
-def get_gender(name):
-    img = cv2.imread(name, 1)
+def get_gender(gray):
     val = 100
     line = ''
     while line not in ['МУЖ.', 'ЖЕН.']:
         if val > 200:
             return None
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         cv2.imwrite("bw.png", im_bw)
         gender = Image.open('bw.png')
@@ -99,14 +82,12 @@ def get_gender(name):
     return line
 
 
-def get_date(name):
-    img = cv2.imread(name)
+def get_date(gray):
     val = 100
     line = ''
     while 1:
         if val > 200:
             return None
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         cv2.imwrite("bw.png", im_bw)
         numbers = Image.open('bw.png')
@@ -118,14 +99,12 @@ def get_date(name):
     return line
 
 
-def get_born_in(name):
-    img = cv2.imread(name, 1)
+def get_born_in(gray):
     val = 100
     line = ''
     while len(line) < 2:
         if val > 200:
             return None
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         cv2.imwrite("bw.png", im_bw)
         place = Image.open('bw.png')
@@ -149,14 +128,12 @@ def get_born_in(name):
     return line
 
 
-def get_code(name):
-    img = cv2.imread(name)
+def get_code(gray):
     val = 100
     line = ''
     while 1:
         if val > 200:
             return None
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         im_bw = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY)[1]
         cv2.imwrite("bw.png", im_bw)
         numbers = Image.open('bw.png')

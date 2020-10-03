@@ -14,8 +14,6 @@ def get_bw(name):
     SaltPepperNoise(edges_)
     contour = findSignificantContour(edges_)
     # Draw the contour on the original image
-    contourImg = np.copy(image_vec)
-    cv2.drawContours(contourImg, [contour], 0, (0, 255, 0), 10, cv2.LINE_AA, maxLevel=1)
     mask = np.zeros_like(edges_)
     cv2.fillPoly(mask, [contour], 255)  # calculate sure foreground area by dilating the mask
     mapFg = cv2.erode(mask, np.ones((5, 5), np.uint8), iterations=10)  # mark inital mask as "probably background"
@@ -27,7 +25,7 @@ def get_bw(name):
     trimap_print = np.copy(trimap)
     trimap_print[trimap_print == cv2.GC_PR_BGD] = 128
     trimap_print[trimap_print == cv2.GC_FGD] = 255
-    cv2.imwrite('trimap.png', trimap_print)
+    return trimap_print
 
 
 def SaltPepperNoise(edgeImg):
