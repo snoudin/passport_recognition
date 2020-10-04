@@ -23,6 +23,13 @@ def get_recieved_in(img):
     line = line.replace('_', '')
     line = line.replace('..', '')
     line = line.replace(' .', '')
+    line = line.replace('|', '')
+    line = line.replace('\\', '')
+    line = line.replace('/', '')
+    line = line.replace('[', '')
+    line = line.replace(']', '')
+    line = line.replace('%', '')
+    line = line.replace('#', '')
     while '  ' in line:
         line = line.replace('  ', ' ')
     while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or line[0].islower() or not line[0].isalpha()):
