@@ -90,14 +90,17 @@ def get_date(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = upscale(clear(more_contrast(img)))
     # cv2.imwrite('date.png', img)
-    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789.').lstrip(' \n\t\f\x0c.').rstrip(' \n\t\f\x0c.')
+    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').lstrip(' \n\t\f\x0c.').rstrip(' \n\t\f\x0c.')
     line = line.replace('.', '')
-    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200):
+    while line != '' and (line[0] in ' \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200):
         line = line[1:]
-    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 200):
+    while line != '' and (line[-1] in ' \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 200):
         line = line[:-1]
     if not line:
         return None
+    for i in line:
+        if not i.isdigit():
+            line.pop(line.index(i))
     try:
         d, m, y = int(line[:2]), int(line[2:4]), int(line[4:])
         if d > 31 or m > 12 or y > 2100:
