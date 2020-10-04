@@ -150,6 +150,52 @@ def get_code(img):
     return line
 
 
+def decrypt(img):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
+    img = upscale(clear(more_contrast(img)))
+    line = pytesseract.image_to_string(img).lstrip(' \n\t\f\x0c-').rstrip(' \n\t\f\x0c-')
+    while line != '' and (line[0] in '—-,.:;@#!>%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200
+                          or line[0].islower()):
+        line = line[1:]
+    while line != '' and (line[-1] in '—-,.:;>@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 200
+                          or line[-1].islower()):
+        line = line[:-1]
+    print(line)
+    if not line:
+        return None
+    data = line.split()
+    for i in data:
+        if not i:
+            data.pop(data.index(i))
+    if len(data) != 2:
+        return False
+    data[0] = data[0][5:].rstrip('<>')
+    answer = {}
+    code = {'A': 'А', 'B': 'Б', 'V': 'В', 'G': 'Г', 'D': 'Д', 'E': 'Е', '2': 'Е', 'J': 'Ж', 'Z': 'З', 'I': 'И',
+            'Q': 'И', 'K': 'К', 'L': 'Л', 'M': 'М', 'N': 'Н', 'O': 'О', 'P': 'П', 'R': 'Р', 'S': 'С', 'T': 'Т',
+            'U': 'У', 'F': 'Ф', 'H': 'Х', 'C': 'Ц', '3': 'Ч', '4': 'Ш', 'W': 'Щ', 'X': 'Ъ', 'Y': 'Ы', '9': 'Ь',
+            '6': 'Э', '7': 'Ю', '8': 'Я'}
+    words = data[0].strip('<')
+    for i in words:
+        if not i:
+            words.pop(words.index(i))
+    for i in range(len(words)):
+        words[i] = ''.join([code[j] for j in words[i]]).upper()
+    answer = {"surname": words[0], "name": words[1], "patronym": words[2]}
+    data = data[1][14:]
+    birth = data[:6]
+    answer.update({"birth": birth[4:] + '.' + birth[2:4] + '.' + birth[:2]})
+    data = data[6:]
+    answer["gender"] = 'МУЖ.' if data[1] == 'M' else 'ЖЕН.'
+    data = data[2:].lstrip('<')[1:]
+    date = data[:6]
+    answer.update({"receive_date": date[4:] + '.' + date[2:4] + '.' + date[:2]})
+    data = data[6:]
+    answer.update({"code": data[:3] + '-' + data[3:6]})
+    print(answer)
+    return answer
+
+
 def more_contrast(img):
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
     l, a, b = cv2.split(lab)
@@ -157,30 +203,6 @@ def more_contrast(img):
     cl = clahe.apply(l)
     limg = cv2.merge((cl, a, b))
     return cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-
-
-# Not used
-def remove_noise(im):
-    # smooth the image with alternative closing and opening
-    # with an enlarging kernel
-    morph = im.copy()
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
-    morph = cv2.morphologyEx(morph, cv2.MORPH_CLOSE, kernel)
-    morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-    # take morphological gradient
-    gradient_image = cv2.morphologyEx(morph, cv2.MORPH_GRADIENT, kernel)
-    # split the gradient image into channels
-    image_channels = np.split(np.asarray(gradient_image), 3, axis=2)
-    channel_height, channel_width, _ = image_channels[0].shape
-    # apply Otsu threshold to each channel
-    for i in range(0, 3):
-        _, image_channels[i] = cv2.threshold(~image_channels[i], 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY)
-        image_channels[i] = np.reshape(image_channels[i], newshape=(channel_height, channel_width, 1))
-    # merge the channels
-    image_channels = np.concatenate((image_channels[0], image_channels[1], image_channels[2]), axis=2)
-    # save the denoised image
-    cv2.imwrite('output.jpg', image_channels)
 
 
 def clear(img, denoise=True):
@@ -206,7 +228,3 @@ def clear(img, denoise=True):
 def upscale(img):
     y, x = img.shape
     return cv2.GaussianBlur(cv2.resize(img, (x * 2, y * 2), interpolation=cv2.INTER_AREA), (5, 5), 0)
-
-
-def get_magick(img):
-    pass

@@ -1,11 +1,14 @@
 import sys, os
+import json, time
+from threading import Thread
+import crop
 try:
     from PyQt5.QtCore import Qt, QByteArray
-    from PyQt5 import uic, QtSvg
-    from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QDesktopWidget, QMainWindow, QVBoxLayout
+    from PyQt5 import uic
+    from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QDesktopWidget, QMainWindow, QVBoxLayout, QFileDialog
     from PyQt5.QtGui import QMovie
 except ImportError:
-    os.system('pip install -r requirements.txt')
+    os.system('pip install -r passport_recognition/requirements.txt')
 
 
 class Load(QWidget):
@@ -53,11 +56,31 @@ class MainApp(QMainWindow):
         size = self.size()
         screenGeometry = QDesktopWidget().screenGeometry(-1).size()
         self.setGeometry((screenGeometry.width() - size.width()) // 2, (screenGeometry.height() - size.height()) // 2, size.width(), size.height())
-        uic.loadUi('Form.ui', self)
+        self.path = ''
+        uic.loadUi('Menu.ui', self)
         self.initUI()
 
     def initUI(self):
-        pass
+        self.pushButton.clicked.connect(self.load)
+        self.pushButton_2.clicked.connect(self.analyze)
+
+    def load(self):
+        self.path = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', "Image files (*.jpg *.png *.jpeg)")[0].replace('/', '\\')
+
+    def analyze(self):
+        crop.scan(self.path, 1)
+        time.sleep(50)
+        res = json.load(open('result.json'))
+        self.name_ans.setText(res['name'])
+        self.surname_ans.setText(res['surname'])
+        self.patronym_ans.setText(res['patronym'])
+        self.birth_ans.setText(res['birth'])
+        self.born_in_ans.setText(res['born_in'])
+        self.gender_ans.setText(res['gender'])
+        self.code_ans.setText(res['code'])
+        self.receive_date_ans.setText(res['receive_date'])
+        self.recieved_in_ans.setText(res['recieved_in'])
+        self.animate.destroy()
 
 
 if __name__ == '__main__':
@@ -65,6 +88,3 @@ if __name__ == '__main__':
     ex = Load()
     ex.show()
     sys.exit(app.exec())
-
-
-# TODO: compile to standalone .exe

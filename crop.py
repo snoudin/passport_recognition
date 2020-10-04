@@ -58,7 +58,8 @@ def scan(path, background):
         receive_date = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         pos = template['code']
         code = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
-
+        pos = template['data']
+        data = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y)))
         result = {'snum': recognize.get_snum(np.asarray(snum)),
                   'recieved_in': recognize.get_recieved_in(np.asarray(received_in)),
                   'surname': recognize.get_name(np.asarray(surname)),
@@ -69,9 +70,15 @@ def scan(path, background):
                   'code': recognize.get_code(np.asarray(code)),
                   'birth': recognize.get_date(np.asarray(birth)),
                   'gender': recognize.get_gender(np.asarray(gender))}
+        res = recognize.decrypt(np.asarray(data))
+        if res:
+            for i in res.keys():
+                result[i] = res[i]
         cnt = sum([1 for i in result.keys() if result[i]])
         if cnt > best[1]:
             best = (result, cnt)
     print(time.time() - begin)
     with open('result.json', 'w', encoding='windows-1251') as ans:
         json.dump(best[0], ans, ensure_ascii=False)
+    return 0
+
