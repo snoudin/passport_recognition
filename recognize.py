@@ -31,14 +31,8 @@ def get_recieved_in(img):
         line = line[:-1]
     if not line:
         return None
-    while 'Г.' in line and not line.startswith('Г.'):
-        line = line[1:]
-    while 'ГОР.' in line and not line.startswith('ГОР.'):
-        line = line[1:]
     if 'ГОР.' not in line:
         line = line.replace('ГОР', 'ГОР.')
-    if not line.startswith('ГОР') and 'Г.' not in line and line.startswith('Г'):
-        line = line.replace('Г', 'Г.', 1)
     return line
 
 

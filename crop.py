@@ -1,5 +1,4 @@
 import os
-import time
 import opencv_borders, recognize
 
 
@@ -20,11 +19,8 @@ def scan(path, background):
     except Exception:
         raise IOError('Wrong file path')
     y, x, _ = img.shape
-    begin = time.time()
     if background:
-        begin = time.time()
         pixels = Image.fromarray(opencv_borders.get_bw(path)).load()
-        print(time.time() - begin)
         while all([pixels[left, j] == 0 for j in range(y)]):
             left += 1
         while all([pixels[j, u] == 0 for j in range(x)]):
@@ -77,7 +73,6 @@ def scan(path, background):
         cnt = sum([1 for i in result.keys() if result[i]])
         if cnt > best[1]:
             best = (result, cnt)
-    print(time.time() - begin)
     with open('result.json', 'w', encoding='windows-1251') as ans:
         json.dump(best[0], ans, ensure_ascii=False)
     return 0
