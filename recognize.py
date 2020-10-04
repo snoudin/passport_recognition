@@ -38,10 +38,6 @@ def get_recieved_in(img):
         line = line[:-1]
     if not line:
         return None
-    if 'ГОР.' not in line:
-        line = line.replace('ГОР', 'ГОР.')
-    while not (line.startswith('Г') or line.startswith('ОТДЕЛ')):
-        line = line[1:]
     return line
 
 
@@ -157,6 +153,7 @@ def get_code(img):
 
 
 def decrypt(img):
+    return None
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = upscale(clear(more_contrast(img)))
     line = pytesseract.image_to_string(img).lstrip(' \n\t\f\x0c-').rstrip(' \n\t\f\x0c-')
