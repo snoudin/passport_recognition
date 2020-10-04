@@ -68,7 +68,7 @@ def get_name(img):
 
 def get_gender(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = clear(img)
+    # img = clear(img)
     line = pytesseract.image_to_string(img, lang='rus').upper()
     while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or not line[0].isalpha()):
         line = line[1:]
@@ -85,7 +85,7 @@ def get_gender(img):
 def get_date(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = upscale(clear(more_contrast(img)))
-    # cv2.imwrite('date.png', img)
+    cv2.imwrite('date.png', img)
     line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').lstrip(' \n\t\f\x0c.').rstrip(' \n\t\f\x0c.')
     line = line.replace('.', '')
     while line != '' and (line[0] in ' \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200):
