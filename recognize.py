@@ -33,6 +33,8 @@ def get_recieved_in(img):
         return None
     if 'ГОР.' not in line:
         line = line.replace('ГОР', 'ГОР.')
+    while not (line.startswith('ГОР') or line.startswith('ОТДЕЛ')):
+        line = line[1:]
     return line
 
 
