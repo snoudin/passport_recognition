@@ -17,19 +17,9 @@ def get_recieved_in(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = clear(more_contrast(img))
     line = pytesseract.image_to_string(img, lang='rus')
-    line = line.replace('\n', ' ')
-    line = line.replace('--', '-')
-    line = line.replace(' -', '')
-    line = line.replace('_', '')
-    line = line.replace('..', '')
-    line = line.replace(' .', '')
-    line = line.replace('|', '')
-    line = line.replace('\\', '')
-    line = line.replace('/', '')
-    line = line.replace('[', '')
-    line = line.replace(']', '')
-    line = line.replace('%', '')
-    line = line.replace('#', '')
+    for i in range(3000):
+        if not chr(i).isalpha():
+            line = line.replace(chr(i), ' ')
     while '  ' in line:
         line = line.replace('  ', ' ')
     while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or line[0].islower() or not line[0].isalpha()):
@@ -126,12 +116,14 @@ def get_born_in(img):
         line = line[:-1]
     if not line:
         return None
+    if 'ГОР.' not in line:
+        line = line.replace('ГОР', 'ГОР.')
+    if 'Г.' not in line and 'Г ' in line:
+        line = line.replace('Г', 'Г.')
     while 'Г.' in line and not line.startswith('Г.'):
         line = line[1:]
     while 'ГОР.' in line and not line.startswith('ГОР.'):
         line = line[1:]
-    if 'ГОР.' not in line:
-        line = line.replace('ГОР', 'ГОР.')
     if not line.startswith('ГОР') and 'Г.' not in line and line.startswith('Г'):
         line = line.replace('Г', 'Г.', 1)
     return line

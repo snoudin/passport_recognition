@@ -3,3 +3,4 @@ numpy==1.19.2
 pillow==7.2.0
 pytesseract==0.3.6
 pyqt5==5.15.1
+pandas

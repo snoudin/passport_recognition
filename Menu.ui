@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>NewKid$</string>
+   <string>Recognizer</string>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -47,7 +47,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>Фон основной.png</pixmap>
+    <pixmap>C:/Users/Snoudin/.designer/backup/Фон основной.png</pixmap>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -74,7 +74,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Имя</string>
@@ -104,7 +104,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Фамилия</string>
@@ -134,7 +134,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Отчество</string>
@@ -164,7 +164,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Дата рождения</string>
@@ -194,7 +194,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Место рождения</string>
@@ -224,7 +224,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Пол</string>
@@ -254,7 +254,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Код подразделения</string>
@@ -284,7 +284,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Дата выдачи</string>
@@ -314,7 +314,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: black;</string>
    </property>
    <property name="text">
     <string>Паспорт выдан</string>
@@ -332,15 +332,23 @@
      <height>256</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
    <property name="whatsThis">
     <string>Загрузить фото</string>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string/>
+    <string>Загрузить фото</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>Загрузка 2.png</normaloff>Загрузка 2.png</iconset>
+     <normaloff>C:/Users/Snoudin/.designer/backup/Загрузка 2.png</normaloff>C:/Users/Snoudin/.designer/backup/Загрузка 2.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -358,7 +366,7 @@
     <bool>false</bool>
    </property>
    <property name="flat">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QTextEdit" name="name_res">
@@ -501,20 +509,28 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>344</y>
+     <y>324</y>
      <width>256</width>
      <height>256</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
    <property name="whatsThis">
     <string>Обработать фото</string>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string/>
+    <string>Обработать</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>analyze.png</normaloff>analyze.png</iconset>
+     <normaloff>C:/Users/Snoudin/.designer/backup/analyze.png</normaloff>C:/Users/Snoudin/.designer/backup/analyze.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -523,7 +539,7 @@
     </size>
    </property>
    <property name="flat">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QTextEdit" name="code_ans">
@@ -565,8 +581,6 @@
   <zorder>receiving_date</zorder>
   <zorder>code_ans</zorder>
  </widget>
- <resources>
-  <include location="menu.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
