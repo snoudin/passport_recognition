@@ -56,8 +56,8 @@
   <widget class="QLabel" name="name">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>70</y>
+     <x>291</x>
+     <y>120</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -86,8 +86,8 @@
   <widget class="QLabel" name="surmane">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>110</y>
+     <x>291</x>
+     <y>160</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -116,8 +116,8 @@
   <widget class="QLabel" name="patronym">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>150</y>
+     <x>291</x>
+     <y>200</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -146,8 +146,8 @@
   <widget class="QLabel" name="birth">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>190</y>
+     <x>291</x>
+     <y>240</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -176,8 +176,8 @@
   <widget class="QLabel" name="born_in">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>250</y>
+     <x>291</x>
+     <y>300</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -206,8 +206,8 @@
   <widget class="QLabel" name="gender">
    <property name="geometry">
     <rect>
-     <x>389</x>
-     <y>310</y>
+     <x>400</x>
+     <y>360</y>
      <width>41</width>
      <height>30</height>
     </rect>
@@ -236,8 +236,8 @@
   <widget class="QLabel" name="code">
    <property name="geometry">
     <rect>
-     <x>239</x>
-     <y>350</y>
+     <x>250</x>
+     <y>400</y>
      <width>191</width>
      <height>30</height>
     </rect>
@@ -266,8 +266,8 @@
   <widget class="QLabel" name="receiving_date">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>390</y>
+     <x>291</x>
+     <y>440</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -296,8 +296,8 @@
   <widget class="QLabel" name="receiving_place">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>450</y>
+     <x>291</x>
+     <y>510</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -369,11 +369,11 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QTextEdit" name="name_res">
+  <widget class="QTextEdit" name="name_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>70</y>
+     <x>471</x>
+     <y>120</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -386,11 +386,11 @@
     </font>
    </property>
   </widget>
-  <widget class="QTextEdit" name="surname_res">
+  <widget class="QTextEdit" name="surname_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>110</y>
+     <x>471</x>
+     <y>160</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -403,11 +403,11 @@
     </font>
    </property>
   </widget>
-  <widget class="QTextEdit" name="patronym_res">
+  <widget class="QTextEdit" name="patronym_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>150</y>
+     <x>471</x>
+     <y>200</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -423,8 +423,8 @@
   <widget class="QTextEdit" name="born_in_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>230</y>
+     <x>471</x>
+     <y>280</y>
      <width>280</width>
      <height>70</height>
     </rect>
@@ -440,8 +440,8 @@
   <widget class="QTextEdit" name="birth_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>190</y>
+     <x>471</x>
+     <y>240</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -457,27 +457,10 @@
   <widget class="QTextEdit" name="gender_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>310</y>
+     <x>471</x>
+     <y>360</y>
      <width>280</width>
      <height>30</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Fulbo Argenta</family>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-  </widget>
-  <widget class="QTextEdit" name="recieved_in_ans">
-   <property name="geometry">
-    <rect>
-     <x>460</x>
-     <y>430</y>
-     <width>280</width>
-     <height>70</height>
     </rect>
    </property>
    <property name="font">
@@ -491,8 +474,8 @@
   <widget class="QTextEdit" name="receive_date_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>390</y>
+     <x>471</x>
+     <y>440</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -545,8 +528,119 @@
   <widget class="QTextEdit" name="code_ans">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>350</y>
+     <x>471</x>
+     <y>400</y>
+     <width>280</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Fulbo Argenta</family>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="received_in_ans">
+   <property name="geometry">
+    <rect>
+     <x>471</x>
+     <y>489</y>
+     <width>280</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Fulbo Argenta</family>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </widget>
+  <widget class="QLabel" name="number">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>80</y>
+     <width>150</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Fulbo Argenta</family>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: black;</string>
+   </property>
+   <property name="text">
+    <string>Номер</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="series">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>40</y>
+     <width>150</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Fulbo Argenta</family>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: black;</string>
+   </property>
+   <property name="text">
+    <string>Серия</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="number_ans">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>80</y>
+     <width>280</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Fulbo Argenta</family>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="series_ans">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>40</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -564,22 +658,26 @@
   <zorder>patronym</zorder>
   <zorder>gender</zorder>
   <zorder>surmane</zorder>
-  <zorder>patronym_res</zorder>
+  <zorder>patronym_ans</zorder>
   <zorder>pushButton_2</zorder>
   <zorder>receiving_place</zorder>
   <zorder>code</zorder>
-  <zorder>name_res</zorder>
+  <zorder>name_ans</zorder>
   <zorder>born_in_ans</zorder>
   <zorder>birth</zorder>
   <zorder>born_in</zorder>
-  <zorder>recieved_in_ans</zorder>
   <zorder>gender_ans</zorder>
   <zorder>receive_date_ans</zorder>
-  <zorder>surname_res</zorder>
+  <zorder>surname_ans</zorder>
   <zorder>name</zorder>
   <zorder>pushButton</zorder>
   <zorder>receiving_date</zorder>
   <zorder>code_ans</zorder>
+  <zorder>received_in_ans</zorder>
+  <zorder>number</zorder>
+  <zorder>series</zorder>
+  <zorder>number_ans</zorder>
+  <zorder>series_ans</zorder>
  </widget>
  <resources/>
  <connections/>

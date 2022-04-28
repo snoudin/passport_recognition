@@ -47,8 +47,9 @@ class MainApp(QMainWindow):
         self.gender_ans.setText(res['gender'])
         self.code_ans.setText(res['code'])
         self.receive_date_ans.setText(res['receive_date'])
-        self.recieved_in_ans.setText(res['recieved_in'])
-        self.animate.destroy()
+        self.received_in_ans.setText(res['received_in'])
+        self.series_ans.setText(res['snum'][0])
+        self.number_ans.setText(res['snum'][1])
 
 
 if __name__ == '__main__':

@@ -2,30 +2,138 @@ import pytesseract, cv2
 import numpy as np
 
 
+def postprocess(line):
+    line = line.replace(' ', '')
+    for ind in range(2000):
+        if chr(ind).isdigit():
+            continue
+        line = line.replace(chr(ind), '')
+    return line
+
+
+def string_postprocess(line):
+    for ind in range(2000):
+        if chr(ind).isalpha() or chr(ind).isdigit() or chr(ind) in ' .,/\\-—':
+            continue
+        line = line.replace(chr(ind), '')
+    while '  ' in line:
+        line = line.replace('  ', ' ')
+    return line
+
+
+def word_postprocess(line):
+    line = string_postprocess(line).replace(' ', '')
+    for char in '.,/\\':
+        line = line.replace(char, '')
+    return line
+
+
+def more_contrast(img):
+    res = np.zeros(img.shape, img.dtype)
+    alpha = 1.1  # Simple contrast control
+    beta = 40     # Simple brightness control
+    for y in range(img.shape[0]):
+        for x in range(img.shape[1]):
+            for c in range(img.shape[2]):
+                res[y, x, c] = np.clip(alpha * img[y, x, c] + beta, 0, 255)
+    cv2.imwrite('contrasted.png', res)
+    return res
+
+
+def clear_noise(img):
+    h, w = tuple(img.shape[:2])
+
+    def cnt_near(x, y):
+        res = 0
+        val = dict()
+        val[0] = 2
+        val[128] = 1
+        val[255] = 0
+        res += val[img[y, x - 1, 0]]
+        res += val[img[y - 1, x, 0]]
+        res += val[img[y, x + 1, 0]]
+        res += val[img[y + 1, x, 0]]
+        return res
+
+    for y in range(1, h - 1):
+        for x in range(1, w - 1):
+            if img[y, x][0] == 128 and cnt_near(x, y) <= 1:
+                img[y, x] = [255, 255, 255]
+    cv2.imwrite('cleared.png', img)
+    return img
+
+
+def separate(img, bw=False):
+    res = np.zeros(img.shape, img.dtype)
+    tres_white = 125
+    if bw:
+        tres_white -= 25
+    tres_gray = 250
+    for y in range(res.shape[0]):
+        for x in range(res.shape[1]):
+            sum, mn, mx = 0, 255, 0
+            for c in range(res.shape[2]):
+                sum += 255 - img[y, x, c]
+                mn = min(mn, img[y, x, c])
+                mx = max(mx, img[y, x, c])
+            if bw and mx - mn > 20:
+                res[y, x] = [255, 255, 255]
+                continue
+            if sum < tres_white:
+                res[y, x] = [255, 255, 255]
+            elif sum < tres_gray:
+                res[y, x] = [128, 128, 128]
+    cv2.imwrite('separated.png', res)
+    return clear_noise(res)
+
+
 def get_snum(img):
-    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = upscale(clear(more_contrast(img)))
-    # cv2.imwrite('snum.png', img)
-    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').lstrip('\n\t\f ').rstrip('\n\t\f ')[:12]
-    line.replace(' ', '')
-    if not line:
+    pytesseract.pytesseract.tesseract_cmd = r'E:\code\recognition\passport_recognition\tesseract v5.0.0\tesseract.exe'
+    img = separate(more_contrast(img))
+    cv2.imwrite('snum.png', img)
+    line = pytesseract.image_to_string(img, lang='digits_comma', config='--psm 7 --oem 3')
+    line = postprocess(line)
+    if len(line) != 10:
         return None
     return tuple([line[:4], line[4:]])
 
 
-def get_recieved_in(img):
+def get_date(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = clear(more_contrast(img))
+    img = separate(more_contrast(img), True)
+    cv2.imwrite('date_after.png', img)
+    line = pytesseract.image_to_string(img, lang='digits_comma', config='--psm 7 --oem 3')
+    line = postprocess(line)
+    if len(line) != 8:
+        return None
+    if line[0] == '6' or line[0] == '9':
+        line[0] = '0'
+    if line[2] == '6' or line[2] == '9':
+        line[2] = '0'
+    if line[0] == '8':
+        line[0] = '3'
+    d, m, y = int(line[:2]), int(line[2:4]), int(line[4:])
+    if d > 31 or m > 12 or y > 2100:
+        return None
+    return line[:2] + '.' + line[2:4] + '.' + line[4:]
+
+
+def get_code(img):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
+    img = separate(more_contrast(img), True)
+    cv2.imwrite('code.png', img)
+    line = pytesseract.image_to_string(img, lang='digits_comma', config='--psm 7 --oem 3')
+    line = postprocess(line)
+    if len(line) != 6:
+        return None
+    return line[:3] + '-' + line[3:]
+
+
+def get_received_in(img):
+    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
+    img = separate(more_contrast(img), True)
     line = pytesseract.image_to_string(img, lang='rus')
-    for i in range(3000):
-        if not chr(i).isalpha():
-            line = line.replace(chr(i), ' ')
-    while '  ' in line:
-        line = line.replace('  ', ' ')
-    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or line[0].islower() or not line[0].isalpha()):
-        line = line[1:]
-    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200 or line[-1].islower() or not line[-1].isalpha()):
-        line = line[:-1]
+    line = string_postprocess(line)
     if not line:
         return None
     return line
@@ -33,37 +141,21 @@ def get_recieved_in(img):
 
 def get_name(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = clear(more_contrast(img))
+    img = separate(more_contrast(img))
+    cv2.imwrite('name.png', img)
     line = pytesseract.image_to_string(img, lang='rus')
-    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or not line[0].isalpha()):
-        line = line[1:]
-    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200 or not line[-1].isalpha()):
-        line = line[:-1]
+    line = word_postprocess(line)
     if not line:
         return None
-    words = line.split('\n')
-    for i in words:
-        pos = words.index(i)
-        while i != '' and (i[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(i[0]) > 1200 or not line[0].isalpha()):
-            i = i[1:]
-        while i != '' and (i[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(i[-1]) > 1200 or not line[-1].isalpha()):
-            i = i[:-1]
-        words[pos] = i.lstrip('—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/').rstrip('—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/')
-        if not i or not i.isupper():
-            words.pop(words.index(i))
-    if len(words) > 1:
-        return words[0]
-    return ''.join(words)
+    return line
 
 
 def get_gender(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    # img = clear(img)
+    img = separate(more_contrast(img))
+    cv2.imwrite('gender.png', img)
     line = pytesseract.image_to_string(img, lang='rus').upper()
-    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200 or not line[0].isalpha()):
-        line = line[1:]
-    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200 or not line[-1].isalpha()):
-        line = line[:-1]
+    line = word_postprocess(line)
     if not line:
         return None
     if 'M' in line or 'У' in line.upper():
@@ -72,33 +164,9 @@ def get_gender(img):
         return 'ЖЕН.'
 
 
-def get_date(img):
-    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = upscale(clear(more_contrast(img)))
-    cv2.imwrite('date.png', img)
-    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').lstrip(' \n\t\f\x0c.').rstrip(' \n\t\f\x0c.')
-    line = line.replace('.', '')
-    while line != '' and (line[0] in ' \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200):
-        line = line[1:]
-    while line != '' and (line[-1] in ' \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 200):
-        line = line[:-1]
-    if not line:
-        return None
-    for i in line:
-        if not i.isdigit():
-            line.pop(line.index(i))
-    try:
-        d, m, y = int(line[:2]), int(line[2:4]), int(line[4:])
-        if d > 31 or m > 12 or y > 2100:
-            return None
-    except Exception:
-        return None
-    return line[:2] + '.' + line[2:4] + '.' + line[4:]
-
-
 def get_born_in(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = clear(more_contrast(img))
+    img = separate(more_contrast(img))
     # cv2.imwrite('born_in.png', img)
     line = pytesseract.image_to_string(img, lang='rus')
     line = line.replace('\n', ' ')
@@ -108,12 +176,7 @@ def get_born_in(img):
     line = line.replace('..', '')
     line = line.replace(' .', '')
     line = line.replace('  ', ' ')
-    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 1200
-                          or line[0].islower() or not line[0].isalpha()):
-        line = line[1:]
-    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 1200
-                          or line[-1].islower() or not line[-1].isalpha()):
-        line = line[:-1]
+    line = string_postprocess(line)
     if not line:
         return None
     if 'ГОР.' not in line:
@@ -129,25 +192,12 @@ def get_born_in(img):
     return line
 
 
-def get_code(img):
-    pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = clear(more_contrast(img))
-    line = pytesseract.image_to_string(img, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789-').lstrip(' \n\t\f\x0c-').rstrip(' \n\t\f\x0c-')
-    while line != '' and (line[0] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200
-                          or line[0].islower()):
-        line = line[1:]
-    while line != '' and (line[-1] in '—-,.:;@#!%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[-1]) > 200
-                          or line[-1].islower()):
-        line = line[:-1]
-    if not line:
-        return None
-    return line
-
-
 def decrypt(img):
+
     return None
+
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
-    img = upscale(clear(more_contrast(img)))
+    img = separate(more_contrast(img))
     line = pytesseract.image_to_string(img).lstrip(' \n\t\f\x0c-').rstrip(' \n\t\f\x0c-')
     while line != '' and (line[0] in '—-,.:;@#!>%$?&[]{}_+= \n\t\f\x0c^*()|\\/' or ord(line[0]) > 200
                           or line[0].islower()):
@@ -189,37 +239,3 @@ def decrypt(img):
     answer.update({"code": data[:3] + '-' + data[3:6]})
     print(answer)
     return answer
-
-
-def more_contrast(img):
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    l, a, b = cv2.split(lab)
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    cl = clahe.apply(l)
-    limg = cv2.merge((cl, a, b))
-    return cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-
-
-def clear(img, denoise=True):
-    if denoise:
-        dst = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
-        gray = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
-        ret, bw = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY_INV)
-    else:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        ret, bw = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY_INV)
-    connectivity = 4
-    nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(bw, connectivity, cv2.CV_32S)
-    sizes = stats[1:, -1]
-    nb_components = nb_components - 1
-    min_size = 50  # threshhold value for small noisy components
-    img2 = np.zeros((output.shape), np.uint8)
-    for i in range(0, nb_components):
-        if sizes[i] >= min_size:
-            img2[output == i + 1] = 255
-    return cv2.bitwise_not(img2)
-
-
-def upscale(img):
-    y, x = img.shape
-    return cv2.GaussianBlur(cv2.resize(img, (x * 2, y * 2), interpolation=cv2.INTER_AREA), (5, 5), 0)
