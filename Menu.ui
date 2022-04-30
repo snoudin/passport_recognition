@@ -56,8 +56,8 @@
   <widget class="QLabel" name="name">
    <property name="geometry">
     <rect>
-     <x>291</x>
-     <y>120</y>
+     <x>290</x>
+     <y>60</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -86,8 +86,8 @@
   <widget class="QLabel" name="surmane">
    <property name="geometry">
     <rect>
-     <x>291</x>
-     <y>160</y>
+     <x>290</x>
+     <y>20</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -116,8 +116,8 @@
   <widget class="QLabel" name="patronym">
    <property name="geometry">
     <rect>
-     <x>291</x>
-     <y>200</y>
+     <x>290</x>
+     <y>100</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -146,8 +146,8 @@
   <widget class="QLabel" name="birth">
    <property name="geometry">
     <rect>
-     <x>291</x>
-     <y>240</y>
+     <x>290</x>
+     <y>180</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -176,8 +176,8 @@
   <widget class="QLabel" name="born_in">
    <property name="geometry">
     <rect>
-     <x>291</x>
-     <y>300</y>
+     <x>290</x>
+     <y>330</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -207,7 +207,7 @@
    <property name="geometry">
     <rect>
      <x>400</x>
-     <y>360</y>
+     <y>140</y>
      <width>41</width>
      <height>30</height>
     </rect>
@@ -296,8 +296,8 @@
   <widget class="QLabel" name="receiving_place">
    <property name="geometry">
     <rect>
-     <x>291</x>
-     <y>510</y>
+     <x>290</x>
+     <y>500</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -326,10 +326,10 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
+     <x>10</x>
+     <y>10</y>
      <width>256</width>
-     <height>256</height>
+     <height>181</height>
     </rect>
    </property>
    <property name="font">
@@ -372,8 +372,8 @@
   <widget class="QTextEdit" name="name_ans">
    <property name="geometry">
     <rect>
-     <x>471</x>
-     <y>120</y>
+     <x>470</x>
+     <y>60</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -389,8 +389,8 @@
   <widget class="QTextEdit" name="surname_ans">
    <property name="geometry">
     <rect>
-     <x>471</x>
-     <y>160</y>
+     <x>470</x>
+     <y>20</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -406,8 +406,8 @@
   <widget class="QTextEdit" name="patronym_ans">
    <property name="geometry">
     <rect>
-     <x>471</x>
-     <y>200</y>
+     <x>470</x>
+     <y>100</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -423,10 +423,10 @@
   <widget class="QTextEdit" name="born_in_ans">
    <property name="geometry">
     <rect>
-     <x>471</x>
-     <y>280</y>
+     <x>470</x>
+     <y>300</y>
      <width>280</width>
-     <height>70</height>
+     <height>91</height>
     </rect>
    </property>
    <property name="font">
@@ -440,8 +440,8 @@
   <widget class="QTextEdit" name="birth_ans">
    <property name="geometry">
     <rect>
-     <x>471</x>
-     <y>240</y>
+     <x>470</x>
+     <y>180</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -458,7 +458,7 @@
    <property name="geometry">
     <rect>
      <x>471</x>
-     <y>360</y>
+     <y>140</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -491,10 +491,10 @@
   <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>324</y>
+     <x>10</x>
+     <y>200</y>
      <width>256</width>
-     <height>256</height>
+     <height>181</height>
     </rect>
    </property>
    <property name="font">
@@ -545,8 +545,8 @@
   <widget class="QTextEdit" name="received_in_ans">
    <property name="geometry">
     <rect>
-     <x>471</x>
-     <y>489</y>
+     <x>470</x>
+     <y>479</y>
      <width>280</width>
      <height>81</height>
     </rect>
@@ -563,7 +563,7 @@
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>80</y>
+     <y>260</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -593,7 +593,7 @@
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>40</y>
+     <y>220</y>
      <width>150</width>
      <height>30</height>
     </rect>
@@ -623,7 +623,7 @@
    <property name="geometry">
     <rect>
      <x>470</x>
-     <y>80</y>
+     <y>260</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -640,7 +640,7 @@
    <property name="geometry">
     <rect>
      <x>470</x>
-     <y>40</y>
+     <y>220</y>
      <width>280</width>
      <height>30</height>
     </rect>
@@ -651,6 +651,52 @@
      <weight>75</weight>
      <bold>true</bold>
     </font>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>390</y>
+     <width>256</width>
+     <height>181</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="whatsThis">
+    <string>Загрузить фото</string>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Сохранить правки</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>C:/Users/Snoudin/.designer/backup/Загрузка 2.png</normaloff>C:/Users/Snoudin/.designer/backup/Загрузка 2.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>256</width>
+     <height>256</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
    </property>
   </widget>
   <zorder>label</zorder>
@@ -678,6 +724,7 @@
   <zorder>series</zorder>
   <zorder>number_ans</zorder>
   <zorder>series_ans</zorder>
+  <zorder>pushButton_3</zorder>
  </widget>
  <resources/>
  <connections/>

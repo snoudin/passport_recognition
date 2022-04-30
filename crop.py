@@ -82,14 +82,8 @@ def scan(path, background):
             'received_in': recognize.get_received_in(np.asarray(received_in)),
             'born_in': recognize.get_born_in(np.asarray(born_in))
         }
-        res = recognize.decrypt(np.asarray(data))
-        if res:
-            for i in res.keys():
-                result[i] = res[i]
-        cnt = sum([1 for i in result.keys() if result[i]])
-        if cnt > best[1]:
-            best = (result, cnt)
+        # res = recognize.decrypt(np.asarray(data))
     with open('result.json', 'w', encoding='windows-1251') as ans:
-        json.dump(best[0], ans, ensure_ascii=False)
+        json.dump(result, ans, ensure_ascii=False)
     return 0
 

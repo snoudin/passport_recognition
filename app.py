@@ -37,19 +37,28 @@ class MainApp(QMainWindow):
         im.save(new_name)
         crop.scan(new_name, 1)  # funny bug: opencv can`t read file with russian letters in path
         os.remove(new_name)
-        time.sleep(50)
-        res = json.load(open('result.json'))
-        self.name_ans.setText(res['name'])
-        self.surname_ans.setText(res['surname'])
-        self.patronym_ans.setText(res['patronym'])
-        self.birth_ans.setText(res['birth'])
-        self.born_in_ans.setText(res['born_in'])
-        self.gender_ans.setText(res['gender'])
-        self.code_ans.setText(res['code'])
-        self.receive_date_ans.setText(res['receive_date'])
-        self.received_in_ans.setText(res['received_in'])
-        self.series_ans.setText(res['snum'][0])
-        self.number_ans.setText(res['snum'][1])
+        res = json.load(open('result.json', 'r'))
+        if res['name']:
+            self.name_ans.setText(res['name'])
+        if res['surname']:
+            self.surname_ans.setText(res['surname'])
+        if res['patronym']:
+            self.patronym_ans.setText(res['patronym'])
+        if res['birth']:
+            self.birth_ans.setText(res['birth'])
+        if res['born_in']:
+            self.born_in_ans.setText(res['born_in'])
+        if res['gender']:
+            self.gender_ans.setText(res['gender'])
+        if res['code']:
+            self.code_ans.setText(res['code'])
+        if res['receive_date']:
+            self.receive_date_ans.setText(res['receive_date'])
+        if res['received_in']:
+            self.received_in_ans.setText(res['received_in'])
+        if res['snum']:
+            self.series_ans.setText(res['snum'][0])
+            self.number_ans.setText(res['snum'][1])
 
 
 if __name__ == '__main__':
