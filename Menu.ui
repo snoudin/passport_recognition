@@ -674,7 +674,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Сохранить правки</string>
+    <string>Сохранить изменения</string>
    </property>
    <property name="icon">
     <iconset>
