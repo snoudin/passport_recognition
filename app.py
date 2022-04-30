@@ -1,15 +1,17 @@
-import sys, os
-import json, time
+import sys
+import json
 import crop
 try:
     from PyQt5 import uic
     from PyQt5.QtWidgets import QApplication, QLabel, QDesktopWidget, QMainWindow, QFileDialog
     from PIL import Image
+    import numpy as np
 except ImportError:
     os.system('pip install -r passport_recognition/requirements.txt')
     from PyQt5 import uic
     from PyQt5.QtWidgets import QApplication, QLabel, QDesktopWidget, QMainWindow, QFileDialog
-    from PIL import *
+    from PIL import Image
+    import numpy as np
 
 
 class MainApp(QMainWindow):
@@ -32,11 +34,11 @@ class MainApp(QMainWindow):
         self.statusBar().showMessage('Фото успешно загружено')
 
     def analyze(self):
-        im = Image.open(self.path)
-        new_name = 'localname' + '.' + self.path.split('.')[-1]
-        im.save(new_name)
-        crop.scan(new_name, 1)  # funny bug: opencv can`t read file with russian letters in path
-        os.remove(new_name)
+        try:
+            im = Image.open(self.path)
+        except Exception:
+            raise IOError('Wrong file path')
+        crop.scan(np.asarray(im))  # funny bug: opencv can`t read file with russian letters in path
         res = json.load(open('result.json', 'r'))
         if res['name']:
             self.name_ans.setText(res['name'])

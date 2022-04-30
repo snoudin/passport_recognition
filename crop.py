@@ -1,12 +1,8 @@
 import os
-import opencv_borders, recognize
+import recognize
 
 
-def scan(path, background):
-    '''
-    path can be absolute and local
-    background is bool, mean there is picture contains background behind passport
-    '''
+def scan(img):
     try:
         from PIL import Image
         import cv2, json
@@ -17,22 +13,20 @@ def scan(path, background):
         import cv2, json
         import numpy as np
     left, u, r, d = 0, 0, 0, 0
-    try:
-        img = cv2.imread(path)
-    except Exception:
-        raise IOError('Wrong file path')
     y, x, _ = img.shape
-    if background:
-        pixels = Image.fromarray(opencv_borders.get_bw(path)).load()
-        while np.mean([pixels[left, j] for j in range(y)]) < 5:
-            left += 1
-        while np.mean([pixels[j, u] for j in range(x)]) < 5:
-            u += 1
-        while np.mean([pixels[x - r - 1, j] for j in range(y)]) < 5:
-            r += 1
-        while np.mean([pixels[j, y - d - 1] for j in range(x)]) < 5:
-            d += 1
+    pixels = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #  cv2.imwrite('passport.png', img)
+    #  cv2.imwrite('grayscaled.png', pixels)
+    while np.mean([pixels[j, left] for j in range(y)]) > 250:
+        left += 1
+    while np.mean([pixels[u, j] for j in range(x)]) > 250:
+        u += 1
+    while np.mean([pixels[j, x - r - 1] for j in range(y)]) > 250:
+        r += 1
+    while np.mean([pixels[y - d - 1, j] for j in range(x)]) > 250:
+        d += 1
     passport = Image.fromarray(img).crop((left, u, x - r, y - d))
+    #  passport.save('cropped.png')
     x, y = passport.size
     templates = json.load(open('templates.json'))
     best = ({}, 0)

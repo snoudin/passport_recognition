@@ -150,7 +150,7 @@ def separate(img, bw=False):
 def get_snum(img):
     pytesseract.pytesseract.tesseract_cmd = r'E:\code\recognition\passport_recognition\tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img))
-    cv2.imwrite('snum.png', img)
+    #  cv2.imwrite('snum.png', img)
     line = pytesseract.image_to_string(img, lang='digits_comma', config='--psm 8 --oem 3')
     line = postprocess(line)
     if len(line) != 10:
@@ -161,7 +161,7 @@ def get_snum(img):
 def get_date(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img), True)
-    cv2.imwrite('date_after.png', img)
+    #  cv2.imwrite('date_after.png', img)
     line = pytesseract.image_to_string(img, lang='digits_comma', config='--psm 8 --oem 3')
     line = postprocess(line)
     if len(line) != 8:
@@ -181,7 +181,7 @@ def get_date(img):
 def get_code(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img), True)
-    cv2.imwrite('code.png', img)
+    #  cv2.imwrite('code.png', img)
     line = pytesseract.image_to_string(img, lang='digits_comma', config='--psm 8 --oem 3')
     line = postprocess(line)
     if len(line) != 6:
@@ -192,6 +192,7 @@ def get_code(img):
 def get_received_in(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img), True)
+    #  cv2.imwrite('received_in.png', img)
     line = pytesseract.image_to_string(img, lang='rus')
     line = string_postprocess(line)
     if not line:
@@ -202,7 +203,7 @@ def get_received_in(img):
 def get_name(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img))
-    cv2.imwrite('name.png', img)
+    #  cv2.imwrite('name.png', img)
     line = pytesseract.image_to_string(img, lang='rus', config='--psm 7 --oem 3').upper()
     line = word_postprocess(line)
     if not line:
@@ -213,7 +214,7 @@ def get_name(img):
 def get_gender(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img))
-    cv2.imwrite('gender.png', img)
+    #  cv2.imwrite('gender.png', img)
     line = pytesseract.image_to_string(img, lang='rus', config='--psm 7 --oem 3').upper()
     line = word_postprocess(line)
     if not line:
@@ -234,7 +235,7 @@ def get_gender(img):
 def get_born_in(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img))
-    cv2.imwrite('born_in.png', img)
+    #  cv2.imwrite('born_in.png', img)
     line = pytesseract.image_to_string(img, lang='rus').upper()
     line = line.replace('\n', ' ')
     line = line.replace('--', '-')
@@ -262,7 +263,7 @@ def get_born_in(img):
 def decrypt(img):
     pytesseract.pytesseract.tesseract_cmd = r'tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img))
-    cv2.imwrite('data.png', img)
+    #  cv2.imwrite('data.png', img)
     line = pytesseract.image_to_string(img, lang='eng', config='--psm 6 --oem 3')
     line = data_postprocess(line)
     print(line)
