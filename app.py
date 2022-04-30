@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import json
 import crop
 try:
@@ -28,10 +28,28 @@ class MainApp(QMainWindow):
     def initUI(self):
         self.pushButton.clicked.connect(self.load)
         self.pushButton_2.clicked.connect(self.analyze)
+        self.pushButton_3.clicked.connect(self.edit)
 
     def load(self):
         self.path = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', "Image files (*.jpg *.png *.jpeg)")[0].replace('/', '\\')
         self.statusBar().showMessage('Фото успешно загружено')
+
+    def edit(self):
+        res = {
+            'name': self.name_ans.toPlainText(),
+            'surname': self.surname_ans.toPlainText(),
+            'patronym': self.patronym_ans.toPlainText(),
+            'birth': self.birth_ans.toPlainText(),
+            'born_in': self.born_in_ans.toPlainText(),
+            'gender': self.gender_ans.toPlainText(),
+            'code': self.code_ans.toPlainText(),
+            'receive_date': self.receive_date_ans.toPlainText(),
+            'received_in': self.received_in_ans.toPlainText(),
+            'snum': [self.series_ans.toPlainText(), self.number_ans.toPlainText()]
+        }
+        with open('result.json', 'w', encoding='utf-8') as ans:
+            json.dump(res, ans, ensure_ascii=False)
+        self.statusBar().showMessage('Изменения сохранены')
 
     def analyze(self):
         try:
@@ -39,7 +57,7 @@ class MainApp(QMainWindow):
         except Exception:
             raise IOError('Wrong file path')
         crop.scan(np.asarray(im))  # funny bug: opencv can`t read file with russian letters in path
-        res = json.load(open('result.json', 'r'))
+        res = json.load(open('result.json', 'r', encoding='utf-8'))
         if res['name']:
             self.name_ans.setText(res['name'])
         if res['surname']:

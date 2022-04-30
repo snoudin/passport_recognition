@@ -13,8 +13,9 @@ def postprocess(line):
 
 
 def string_postprocess(line):
+    line = line.replace('—', '-')
     for ind in range(2000):
-        if chr(ind).isalpha() or chr(ind).isdigit() or chr(ind) in ' .,/\\-—':
+        if chr(ind).isalpha() or chr(ind).isdigit() or chr(ind) in ' .,/\\-':
             continue
         line = line.replace(chr(ind), '')
     while '  ' in line:
@@ -26,9 +27,7 @@ def word_postprocess(line):
     line = string_postprocess(line).replace(' ', '')
     for char in '.,/\\':
         line = line.replace(char, '')
-    for char in '-—-':
-        line = line.strip(char)
-    return line
+    return line.strip('-')
 
 
 def data_postprocess(line):
@@ -150,7 +149,7 @@ def separate(img, bw=False):
 def get_snum(img):
     pytesseract.pytesseract.tesseract_cmd = r'E:\code\recognition\passport_recognition\tesseract v5.0.0\tesseract.exe'
     img = separate(more_contrast(img))
-    #  cv2.imwrite('snum.png', img)
+    cv2.imwrite('snum.png', img)
     line = pytesseract.image_to_string(img, lang='digits_comma', config='--psm 8 --oem 3')
     line = postprocess(line)
     if len(line) != 10:

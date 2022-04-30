@@ -77,7 +77,7 @@ def scan(img):
             'born_in': recognize.get_born_in(np.asarray(born_in))
         }
         # res = recognize.decrypt(np.asarray(data))
-    with open('result.json', 'w', encoding='windows-1251') as ans:
+    with open('result.json', 'w', encoding='utf-8') as ans:
         json.dump(result, ans, ensure_ascii=False)
     return 0
 
