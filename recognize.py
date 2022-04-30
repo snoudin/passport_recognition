@@ -5,19 +5,19 @@ from math import floor
 
 def postprocess(line):
     line = line.replace(' ', '')
-    for ind in range(2000):
-        if chr(ind).isdigit():
+    for char in line:
+        if char.isdigit():
             continue
-        line = line.replace(chr(ind), '')
+        line = line.replace(char, '')
     return line
 
 
 def string_postprocess(line):
     line = line.replace('—', '-')
-    for ind in range(2000):
-        if chr(ind).isalpha() or chr(ind).isdigit() or chr(ind) in ' .,/\\-':
+    for char in line:
+        if char.isalpha() or char.isdigit() or char in ' .,/\\-':
             continue
-        line = line.replace(chr(ind), '')
+        line = line.replace(char, '')
     while '  ' in line:
         line = line.replace('  ', ' ')
     return line
@@ -32,7 +32,7 @@ def word_postprocess(line):
 
 def data_postprocess(line):
     line = line.upper()
-    for ind in range(2000):
+    for ind in range(10000):
         if chr(ind).isdigit():
             continue
         if 'A' <= chr(ind) <= 'Z':
@@ -51,7 +51,7 @@ def more_contrast(img):
         for x in range(img.shape[1]):
             for c in range(img.shape[2]):
                 res[y, x, c] = np.clip(alpha * img[y, x, c] + beta, 0, 255)
-    cv2.imwrite('contrasted.png', res)
+    #  cv2.imwrite('contrasted.png', res)
     return res
 
 
@@ -99,7 +99,7 @@ def clear_noise(img):
             used[a][b] = 1
             process.append((a, b))
 
-    cv2.imwrite('cleared.png', img)
+    #  cv2.imwrite('cleared.png', img)
     return img
 
 
@@ -142,7 +142,7 @@ def separate(img, bw=False):
             elif sum < tres_grey:
                 val = 128 - floor(127 * (tres_grey - sum) / (tres_grey - tres_white))
                 res[y, x] = [val, val, val]
-    cv2.imwrite('separated.png', res)
+    #  cv2.imwrite('separated.png', res)
     return clear_noise(remove_lines(res))
 
 
@@ -166,11 +166,11 @@ def get_date(img):
     if len(line) != 8:
         return None
     if line[0] == '6' or line[0] == '9':
-        line[0] = '0'
+        line = '0' + line[1:]
     if line[2] == '6' or line[2] == '9':
-        line[2] = '0'
+        line = line[:2] + '0' + line[3:]
     if line[0] == '8':
-        line[0] = '3'
+        line = '3' + line[1:]
     d, m, y = int(line[:2]), int(line[2:4]), int(line[4:])
     if d > 31 or m > 12 or y > 2100:
         return None

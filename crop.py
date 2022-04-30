@@ -25,11 +25,10 @@ def scan(img):
         r += 1
     while np.mean([pixels[y - d - 1, j] for j in range(x)]) > 250:
         d += 1
-    passport = Image.fromarray(img).crop((left, u, x - r, y - d))
+    passport = Image.fromarray(img).crop((left, u, x - r, y - d)).convert('RGB')
     #  passport.save('cropped.png')
     x, y = passport.size
     templates = json.load(open('templates.json'))
-    best = ({}, 0)
     for template in templates:
         pos = template['snum']
         snum = passport.crop((int(pos[0] * x), int(pos[1] * y), int(pos[2] * x), int(pos[3] * y))).transpose(Image.ROTATE_90)
